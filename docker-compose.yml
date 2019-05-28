@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: mqtt
+    ports: 
+      - "1883:1883"  # Needed to be able to post test messages directly into container
+
+  app:
+    build: .
+    image: docker-magicmirror-mqtt
+    container_name: magic_mirror_dock
+    links:
+     - mqtt
+    environment:
+      - MQTT_HOST=mqtt
+    depends_on:
+      - mqtt
+    ports:
+      - "8080:8080"
